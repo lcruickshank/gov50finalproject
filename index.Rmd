@@ -1,14 +1,84 @@
 ---
 title: "Gov 50 Final Project"
-author: "Your Name Here"
-description: "My final project"
+author: "Lauren Cruickshank"
+description: "Gov 50 Final Project"
 output:
-  distill::distill_article:
-    self_contained: false
+  html_document:
+    theme: darkly
+    toc: true
+    toc_float: true
 ---
 
 
 
 ## Project thoughts
 
-I am interested in exploring data related to...
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+
+
+library(tidyverse)
+library(dplyr)
+library(readr)
+library(gapminder)
+
+cand_sp <- read_csv("fpd.csv")
+
+cand_sp
+```
+
+```{r}
+options(scipen = 999)
+
+
+cand_sp|>
+  slice_max(overallfunding, n = 20)|>
+ggplot(
+       mapping = aes(x = overallfunding, y = fct_reorder(Candidate, overallfunding))) +
+  geom_col()
+```
+```{r}
+cand_sp|>
+  ggplot(
+    mapping = aes(
+      x = overallfunding,
+      y = pervote,
+      color = Result))+
+  geom_point()+
+  geom_smooth()+
+  scale_x_log10()
+```
+```{r}
+cand_sp|>
+  ggplot(
+    mapping = aes(
+      x = overallfunding,
+      y = pervote))+
+  geom_point(color = "blue")+
+  geom_smooth(color = "red")+
+  scale_x_log10()
+```
+
+
+```{r}
+regr_1 <- lm(overallfunding ~ pervote, data = cand_sp)|>
+  summary()
+
+var_labels <- c(
+  "(Intercept)"
+)
+modelsummary::modelsummary(regr_1,
+statistic = c("s.e. = {std.error}",
+"p = {p.value}"),
+gof_map = c("nobs", "r.squared", "adj.r.squared"))
+```
+```{r}
+regr_2 <- lm(overallfunding ~ pervote + Result, data = cand_sp)|>
+  summary()
+
+modelsummary::modelsummary(regr_2,
+statistic = c("s.e. = {std.error}",
+"p = {p.value}"),
+gof_map = c("nobs", "r.squared", "adj.r.squared"))
+```
+
