@@ -148,7 +148,7 @@ In this study, the null hypothesis suggest that there is no relationship between
 
 The following regression displays the relationship between the the amount of funding a candidate received and the share percentage of votes they received during the election process.
 
-```{r warning=FALSE,message=FALSE, results='hide'}
+```{r }
 regr_2 <- lm(overallfunding ~ pervote, data = cand_sp)
 
 r2 <- get_regression_table(regr_2)
