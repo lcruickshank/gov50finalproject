@@ -1,6 +1,6 @@
 ---
 title: "Gov 50 Final Project"
-format: html
+format: website
 author: Lauren Cruickshank
 toc: true
 toc-title: Table of Contents
