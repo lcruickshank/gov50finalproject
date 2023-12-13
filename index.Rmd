@@ -4,30 +4,55 @@ author: "Lauren Cruickshank"
 description: "Gov 50 Final Project"
 output:
   html_document:
-    theme: darkly
+    theme: cosmo
     toc: true
     toc_float: true
 ---
 
+## [![Clink Image for 2024 Election Predictions](https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2023-11/231106-Election-Preview-Joanna-Neborsky-jg-72121e.jpg)](https://www.270towin.com/maps/biden-trump-2024-map-based-on-polls)
 
+# Introduction {style="color: navy"}
 
-## Project thoughts
+## **Background**
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+The 2024 presidential election cycle is currently approaching. As it is known, there is a host of factors that can effect ones campaign run and thus the results of the election. The U.S states government has formed very specific rules around the use of campaign funds and the way that they are used. Nonetheless, this study aims to find if there is a correlation between the amount of campaign funds a candidate has and their election results. The data set represents the campaign funding and election results of House and Senate candidates from 2016 to 2020. The explanatory variable in this study is is the amount of funding that each candidate receives. The response variable or outcome is whether the candidate saw success in the election.
 
+## **Hypotheses**
 
+The Hypotheses of this Study are as follows:
+
+1)  As the **amount of available campaign funding increases** so will the **wins of the candidates increase**
+2)  As the **amount of available campaign funding increases** so will the **share percentage of votes received by candidates in the elections increase**
+
+# Data Interest {#sec-running-code style="color: crimson"}
+
+```{r warning=FALSE, message=FALSE,results='hide'}
 library(tidyverse)
 library(dplyr)
 library(readr)
 library(gapminder)
+library(infer)
+library(moderndive)
+
 
 cand_sp <- read_csv("fpd.csv")
 
 cand_sp
 ```
 
-```{r}
+The sample used is comprised of data compiled by the OpenSecrets the "nation's premier research group tracking money in U.S politics and its effect on elections and public policy. In this study, OpenSecret's data on candidate spending and results from 2016 to 2020 were used. In order to include the percentage share by which the candidate won or loss, it had to be individually searched in the database of OpenSecret.
+
+## Data Links: {style="color: navy"}
+
+[OpenSecrets](https://www.opensecrets.org/elections-overview/top-self-funders?cycle=2016){style="color: crimson"}
+
+The **independent variable** in this study is the *amount of money that each candidate has for campaign funding*. The **dependent variable** is the *share percentage of votes the candidates receive* and *the results that each candidate yielded from the election*.
+
+In order to identify a relationship between overall campaign funding, share percentage of votes from election, and candidates results from the election, this analysis is utilizing a correlation research design.
+
+The graph below represents the top twenty candidatyes with the highest campaign funding from 2016 to 2020.
+
+```{r warning=FALSE,message=FALSE}
 options(scipen = 999)
 
 
@@ -35,9 +60,32 @@ cand_sp|>
   slice_max(overallfunding, n = 20)|>
 ggplot(
        mapping = aes(x = overallfunding, y = fct_reorder(Candidate, overallfunding))) +
-  geom_col()
+  geom_col()+
+  labs(x = "Overall Campaign Funding(k) ",
+       y = "Candidates",
+       title = " Overall Campaign Funding of Candidates from 2016 to 2020",
+       caption = "note: all candidates are not displayed but only the twenty highest funded")
 ```
+
+# Results {style="color: navy"}
+
+## **Linear Regression Between the Share of Votes and Overall Funding Broken Down by Loss and Win**
+
+The following multivariate regression model demonstrates the relationship between the amount of money received for campaign funds, the share percentage of votes the candidate received from the election, and whether the candidate won or loss the overall election.
+
 ```{r}
+regr_1 <- lm(overallfunding ~ pervote, data = cand_sp)
+  
+ r1 <- get_regression_table(regr_1)
+
+knitr::kable(head(r1))
+```
+
+### Interpretation
+
+The intercept of 1,132,003.8 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero. There is an expected increase of 171,455.5 in campaign funding for each unit increase in the share percentage of votes received by the candidate.
+
+```{r warning=FALSE,message=FALSE}
 cand_sp|>
   ggplot(
     mapping = aes(
@@ -46,9 +94,58 @@ cand_sp|>
       color = Result))+
   geom_point()+
   geom_smooth()+
-  scale_x_log10()
+  scale_x_log10()+
+   labs(x = "Overall Campaign Funding(k) ",
+       y = "Share Percentage Of Vote (%)",
+       title = " Share Percentage of Vote vs. Campaign Funding (with Result)")
 ```
-```{r}
+
+The graph above suggest that with both losses and wins there is a slight relationship between an increase of money and an increase of that result. Within the graph it is also evident that candidates who lost their elections experienced more variability in campaign funding than those who won.
+
+```{r warning =FALSE, message=FALSE}
+
+null_dist <- cand_sp |>
+  specify(overallfunding ~ pervote) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute") |>
+  calculate(stat = "correlation")
+
+correlation <- cand_sp |>
+  specify(overallfunding ~ pervote) |>
+  calculate(stat = "correlation")
+
+null_dist |>
+  visualize() +
+  shade_p_value(correlation, direction = "both")
+
+```
+
+```{r warning=FALSE, message=FALSE}
+get_p_value(null_dist, correlation, direction = "both")
+```
+
+In this study, the null hypothesis suggest that there is no relationship between the amount of campaign funding a candidate received and the share percentage of votes they received in the election. With a significance level of ⍺ = 0.05, we would fail to reject the null hypothesis with a p-value of 0.072. Therefore, we conclude that there is not a statistically significant relationship between campaign funds and the share percentage of votes candidates receive in elections.
+
+## **Linear Regression between the Share of Votes and Overall Funding** {style="color: crimson"}
+
+The following regression displays the relationship between the the amount of funding a candidate received and the share percentage of votes they received during the election process.
+
+```{r warning=FALSE,message=FALSE}
+regr_2 <- lm(overallfunding ~ pervote + Result, data = cand_sp)
+
+r2 <- get_regression_table(regr_2)
+
+knitr::kable(head(r2))
+```
+
+### Interpretation
+
+The intercept of 2.509,749.46 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero and the candidate did not win the election. There is an expected increase of 87,475.74 in campaign funding for each unit increase in the share percentage of votes received by the candidate , also assuming that the candidate winning status stays constant.
+
+The coefficient for 'Result: Won' of 6,217,351.12, shows that when a candidate wins the election, there is an expected increase of 6,217,351.12 in campaign funds in comparison ton when the candidate does not win, also assuming that the share percentage of votes stays constant.
+
+```{r warning=FALSE,message=FALSE}
+
 cand_sp|>
   ggplot(
     mapping = aes(
@@ -56,29 +153,12 @@ cand_sp|>
       y = pervote))+
   geom_point(color = "blue")+
   geom_smooth(color = "red")+
-  scale_x_log10()
+  scale_x_log10()+
+  labs(x = "Overall Campaign Funding(k) ",
+       y = "Share Percentage Of Vote (%)",
+       title = " Share Percentage of Vote vs. Campaign Funding")
 ```
 
+The graph above denotes the relationship between the amount of campaign funding a candidate has and the share percentage of votes they received in the election. In this case, without evaluating which candidates won or loss, there seems to be a *slight positive correlation* between an increase in funding and an increase in the share percentage of votes the candidate received.
 
-```{r}
-regr_1 <- lm(overallfunding ~ pervote, data = cand_sp)|>
-  summary()
-
-var_labels <- c(
-  "(Intercept)"
-)
-modelsummary::modelsummary(regr_1,
-statistic = c("s.e. = {std.error}",
-"p = {p.value}"),
-gof_map = c("nobs", "r.squared", "adj.r.squared"))
-```
-```{r}
-regr_2 <- lm(overallfunding ~ pervote + Result, data = cand_sp)|>
-  summary()
-
-modelsummary::modelsummary(regr_2,
-statistic = c("s.e. = {std.error}",
-"p = {p.value}"),
-gof_map = c("nobs", "r.squared", "adj.r.squared"))
-```
-
+## Conclusion {style="color: crimson"}
