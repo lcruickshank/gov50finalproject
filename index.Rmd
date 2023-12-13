@@ -52,7 +52,7 @@ In order to identify a relationship between overall campaign funding, share perc
 
 The graph below represents the top twenty candidatyes with the highest campaign funding from 2016 to 2020.
 
-```{r warning=FALSE,message=FALSE}
+```{r warning=FALSE,message=FALSE, results= 'hide'}
 options(scipen = 999)
 
 
@@ -85,7 +85,7 @@ knitr::kable(head(r1))
 
 The intercept of 1,132,003.8 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero. There is an expected increase of 171,455.5 in campaign funding for each unit increase in the share percentage of votes received by the candidate.
 
-```{r warning=FALSE,message=FALSE}
+```{r warning=FALSE,message=FALSE, results='hide'}
 cand_sp|>
   ggplot(
     mapping = aes(
@@ -102,7 +102,7 @@ cand_sp|>
 
 The graph above suggest that with both losses and wins there is a slight relationship between an increase of money and an increase of that result. Within the graph it is also evident that candidates who lost their elections experienced more variability in campaign funding than those who won.
 
-```{r warning =FALSE, message=FALSE}
+```{r warning =FALSE, message=FALSE, results='hide'}
 
 null_dist <- cand_sp |>
   specify(overallfunding ~ pervote) |>
@@ -120,7 +120,7 @@ null_dist |>
 
 ```
 
-```{r warning=FALSE, message=FALSE}
+```{r warning=FALSE, message=FALSE, results='hide'}
 get_p_value(null_dist, correlation, direction = "both")
 ```
 
@@ -130,7 +130,7 @@ In this study, the null hypothesis suggest that there is no relationship between
 
 The following regression displays the relationship between the the amount of funding a candidate received and the share percentage of votes they received during the election process.
 
-```{r warning=FALSE,message=FALSE}
+```{r warning=FALSE,message=FALSE, results='hide'}
 regr_2 <- lm(overallfunding ~ pervote + Result, data = cand_sp)
 
 r2 <- get_regression_table(regr_2)
@@ -144,7 +144,7 @@ The intercept of 2.509,749.46 , is the estimated campaign funding when the share
 
 The coefficient for 'Result: Won' of 6,217,351.12, shows that when a candidate wins the election, there is an expected increase of 6,217,351.12 in campaign funds in comparison ton when the candidate does not win, also assuming that the share percentage of votes stays constant.
 
-```{r warning=FALSE,message=FALSE}
+```{r warning=FALSE,message=FALSE, results ='hide'}
 
 cand_sp|>
   ggplot(
@@ -162,3 +162,11 @@ cand_sp|>
 The graph above denotes the relationship between the amount of campaign funding a candidate has and the share percentage of votes they received in the election. In this case, without evaluating which candidates won or loss, there seems to be a *slight positive correlation* between an increase in funding and an increase in the share percentage of votes the candidate received.
 
 # Conclusion {style="color: crimson"}
+
+Limitations
+
+It should be noted that this study only only considers monetary funding as the main independent variable and thus the variable that is causing the outcomes. However, in governmental elections that are a host of factors that actually effect why a candidate may or may not be able to secure the seat. There were also candidates that had to be removed from the original data set because they were included in the main data frame but may have not made it to the main election.
+
+Future Improvements
+
+In future studies more factors can be evaluated that are related to
