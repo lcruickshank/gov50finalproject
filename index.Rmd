@@ -161,4 +161,4 @@ cand_sp|>
 
 The graph above denotes the relationship between the amount of campaign funding a candidate has and the share percentage of votes they received in the election. In this case, without evaluating which candidates won or loss, there seems to be a *slight positive correlation* between an increase in funding and an increase in the share percentage of votes the candidate received.
 
-## Conclusion {style="color: crimson"}
+# Conclusion {style="color: crimson"}
