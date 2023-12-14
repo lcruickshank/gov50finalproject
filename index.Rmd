@@ -20,7 +20,7 @@ Click Image for 2024 Election Predictions
 The data file for this study is `fpd.csv` and contains the following variables:
 
 |                       |                                                          |
-|-----------------------|----------------------------------------------------------|
+|---------------------|---------------------------------------------------|
 | **Name**              | **Description**                                          |
 | `chamber`             | whether the candidate is in the House or Senate          |
 | `candidate`           | the names of candidate, party, and state                 |
@@ -70,7 +70,7 @@ The **independent variable** in this study is the *amount of money that each can
 
 If I observe that candidates with more campaign funding are having increased number of wins or increased share percentage of votes, my hypothesis would be supported. However, I observe that candidates with more campaign funding are having the same number of wins or losses or the same share percentage of votes, then my hypothesis has not been supported.
 
-In order to identify a relationship between overall campaign funding, share percentage of votes from election, and candidates results from the election, this analysis is utilizing a correlation research design.
+In order to identify a relationship between overall campaign funding, share percentage of votes from election, and candidates results from the election, this analysis is utilizing a cross-sectional design. Such a design can be seen as the data was collected at a single period of time.
 
 The graph below represents the top twenty candidatures with the highest campaign funding from 2016 to 2020.
 
@@ -107,9 +107,9 @@ knitr::kable(head(r1),digits = 2)
 
 ### **Interpretation**
 
-The intercept of 2.509,749.46 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero and the candidate did not win the election. There is an expected increase of 87,475.74 in campaign funding for each unit increase in the share percentage points of votes received by the candidate , also assuming that the candidate winning status stays constant.
+The intercept of \$2,509,749.46 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero and the candidate did not win the election. There is an expected increase of \$87,475.74 in campaign funding for each unit increase in the share percentage points of votes received by the candidate , also assuming that the candidate winning status stays constant.
 
-The coefficient for 'Result: Won' of 6,217,351.12, shows that when a candidate wins the election, there is an expected increase of 6,217,351.12 in campaign funds in comparison ton when the candidate does not win, also assuming that the share percentage of votes stays constant.
+The coefficient for 'Result: Won' of \$6,217,351.12, shows that when a candidate wins the election, there is an expected increase of \$6,217,351.12 in campaign funds in comparison ton when the candidate does not win, also assuming that the share percentage of votes stays constant.
 
 ```{r warning=FALSE,message=FALSE, results='hide'}
 # demonstrate the correlation between share percentage of votes and campaign funding separated by results
@@ -185,7 +185,7 @@ knitr::kable(head(r2),digits = 2)
 
 ### **Interpretation**
 
-The intercept of 1,132,003.8 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero. There is an expected increase of 171,455.5 in campaign funding for each unit increase in the share percentage points of votes received by the candidate.
+The intercept of \$1,132,003.8 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero. The coefficient associated with `pervote` is 171,455.5, which represents the slope. It represents that there is an expected increase of \$171,455.5 in campaign funding for each unit increase in the share percentage points of votes received by the candidates. This variable has a p-value of of more than 0.14 which is not statistically significant with an ⍺ of 0.05.
 
 ```{r warning=FALSE,message=FALSE, results ='hide'}
 #demonstrates correlation between share percentage of vote and campaign funding
@@ -207,9 +207,9 @@ The graph above denotes the relationship between the amount of campaign funding 
 
 # **Conclusion** {style="color: crimson"}
 
-From the findings above it is clear that that there is not a statistically significant relationship between campaign funds and the share percentage of votes candidates receive in elections. This can be seen in the p-value of `pervote` at .14 which we would fail to reject the null at the significance level of ⍺ of 0.05.
+From the findings above it is clear that that there is not a statistically significant relationship between campaign funds and the share percentage of votes candidates receive in elections. This can be seen in the p-value of `pervote` at 0.14 which we would fail to reject the null at the significance level of ⍺ of 0.05.
 
-There is also not a statisitcally significant relationship between campaign funds, the results of the campaign, and the share percentage of votes candidates receive in elections. This can be seen by both the p-value of 0.072 at a significance level ⍺ of 0.05 and with the scatterplot of both loss and wins as the both have slight positive relationships with the increase of campaign funding.
+There is also not a statistically significant relationship between campaign funds, the results of the campaign, and the share percentage of votes candidates receive in elections. This can be seen by both the p-value of 0.072 at a significance level ⍺ of 0.05 and with the scatterplot of both loss and wins as the both have slight positive relationships with the increase of campaign funding.
 
 From these findings, it is obvious that my hypotheses were not fully support. Early I hypothesized that:
 
@@ -219,7 +219,7 @@ From these findings, it is obvious that my hypotheses were not fully support. Ea
 
 2)  As the **amount of available campaign funding increases** so will the **share percentage of votes received by candidates in the elections increase**
 
-    There also was a slight positive correlation between campaign funds and share percentage of votes received by candidates but that correlation was found to not be statistically significant. We also failed to reject the null so there is no statistical significant relationship between the increase of share percentage of votes and the amount of available campaign funding.
+    There also was a slight positive correlation between campaign funds and share percentage of votes received by candidates but that correlation was found to not be statistically significant. We also failed to reject the null so there is no statistical significant relationship between the increase of share percentage of votes and the amount of available campaign funding. Therefore, this second hypothesis was not support.
 
 **Limitations**
 
