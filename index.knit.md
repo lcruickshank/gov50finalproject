@@ -44,7 +44,8 @@ The Hypotheses of this Study are as follows:
 
 # Data Interest {#sec-running-code style="color: crimson"}
 
-```{r warning=FALSE, message=FALSE,results='hide'}
+
+```r
 library(tidyverse)
 library(dplyr)
 library(readr)
@@ -70,7 +71,8 @@ In order to identify a relationship between overall campaign funding, share perc
 
 The graph below represents the top twenty candidatyes with the highest campaign funding from 2016 to 2020.
 
-```{r warning=FALSE,message=FALSE, results= 'hide'}
+
+```r
 options(scipen = 999)
 
 
@@ -85,13 +87,16 @@ ggplot(
        caption = "note: all candidates are not displayed but only the twenty highest funded")
 ```
 
+![](index_files/figure-latex/unnamed-chunk-2-1.pdf)<!-- --> 
+
 # Results {style="color: navy"}
 
 ## **Linear Regression Between the Share of Votes and Overall Funding Broken Down by Loss and Win**
 
 The following multivariate regression model demonstrates the relationship between the amount of money received for campaign funds, the share percentage of votes the candidate received from the election, and whether the candidate won or loss the overall election.
 
-```{r}
+
+```r
 regr_1 <- lm(overallfunding ~ pervote + Result, data = cand_sp)
   
  r1 <- get_regression_table(regr_1)
@@ -99,13 +104,22 @@ regr_1 <- lm(overallfunding ~ pervote + Result, data = cand_sp)
 knitr::kable(head(r1),digits = 2)
 ```
 
+
+
+|term        |   estimate| std_error| statistic| p_value|   lower_ci|   upper_ci|
+|:-----------|----------:|---------:|---------:|-------:|----------:|----------:|
+|intercept   | 2509749.46|   5177210|      0.48|    0.63| -7899729.1| 12919228.0|
+|pervote     |   87475.74|    125817|      0.70|    0.49|  -165496.2|   340447.7|
+|Result: Won | 6217351.12|   4271917|      1.46|    0.15| -2371913.3| 14806615.5|
+
 ### **Interpretation**
 
 The intercept of 2.509,749.46 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero and the candidate did not win the election. There is an expected increase of 87,475.74 in campaign funding for each unit increase in the share percentage of votes received by the candidate , also assuming that the candidate winning status stays constant.
 
 The coefficient for 'Result: Won' of 6,217,351.12, shows that when a candidate wins the election, there is an expected increase of 6,217,351.12 in campaign funds in comparison ton when the candidate does not win, also assuming that the share percentage of votes stays constant.
 
-```{r warning=FALSE,message=FALSE, results='hide'}
+
+```r
 cand_sp|>
   ggplot(
     mapping = aes(
@@ -120,12 +134,14 @@ cand_sp|>
        title = " Share Percentage of Vote vs. Campaign Funding (with Result)")
 ```
 
+![](index_files/figure-latex/unnamed-chunk-4-1.pdf)<!-- --> 
+
 The graph above suggest that with both losses and wins there is a slight relationship between an increase of money and an increase of that result. Within the graph it is also evident that candidates who lost their elections experienced more variability in campaign funding than those who won.
 
 ## **Linear Regression between the Share of Votes and Overall Funding** {style="color: crimson"}
 
-```{r warning =FALSE, message=FALSE, results='hide'}
 
+```r
 null_dist <- cand_sp |>
   specify(overallfunding ~ pervote) |>
   hypothesize(null = "independence") |>
@@ -139,10 +155,12 @@ correlation <- cand_sp |>
 null_dist |>
   visualize() +
   shade_p_value(correlation, direction = "both")
-
 ```
 
-```{r warning=FALSE, message=FALSE, results='hide'}
+![](index_files/figure-latex/unnamed-chunk-5-1.pdf)<!-- --> 
+
+
+```r
 get_p_value(null_dist, correlation, direction = "both")
 ```
 
@@ -150,7 +168,8 @@ In this study, the null hypothesis suggest that there is no relationship between
 
 The following regression displays the relationship between the the amount of funding a candidate received and the share percentage of votes they received during the election process.
 
-```{r }
+
+```r
 regr_2 <- lm(overallfunding ~ pervote, data = cand_sp)
 
 r2 <- get_regression_table(regr_2)
@@ -158,12 +177,19 @@ r2 <- get_regression_table(regr_2)
 knitr::kable(head(r2),digits = 2)
 ```
 
+
+
+|term      |  estimate| std_error| statistic| p_value|    lower_ci|   upper_ci|
+|:---------|---------:|---------:|---------:|-------:|-----------:|----------:|
+|intercept | 1132003.8| 5147677.4|      0.22|    0.83| -9212641.27| 11476648.8|
+|pervote   |  171455.5|  113073.6|      1.52|    0.14|   -55774.31|   398685.3|
+
 ### **Interpretation**
 
 The intercept of 1,132,003.8 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero. There is an expected increase of 171,455.5 in campaign funding for each unit increase in the share percentage of votes received by the candidate.
 
-```{r warning=FALSE,message=FALSE, results ='hide'}
 
+```r
 cand_sp|>
   ggplot(
     mapping = aes(
@@ -176,6 +202,8 @@ cand_sp|>
        y = "Share Percentage Of Vote (%)",
        title = " Share Percentage of Vote vs. Campaign Funding")
 ```
+
+![](index_files/figure-latex/unnamed-chunk-8-1.pdf)<!-- --> 
 
 The graph above denotes the relationship between the amount of campaign funding a candidate has and the share percentage of votes they received in the election. In this case, without evaluating which candidates won or loss, there seems to be a *slight positive correlation* between an increase in funding and an increase in the share percentage of votes the candidate received.
 
