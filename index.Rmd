@@ -3,17 +3,19 @@ title: "Gov 50 Final Project"
 author: "Lauren Cruickshank"
 description: Gov 50 Final Project
 output:
-  pdf_document:
-    toc: yes
   html_document:
     theme: cosmo
     toc: yes
     toc_float: yes
+  pdf_document:
+    toc: yes
 ---
 
 ## [![Clink Image for 2024 Election Predictions](https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2023-11/231106-Election-Preview-Joanna-Neborsky-jg-72121e.jpg)](https://www.270towin.com/maps/biden-trump-2024-map-based-on-polls)
 
-# Code Chart
+Click Image for 2024 Election Predictions
+
+**Code Chart**
 
 The data file for this study is `fpd.csv` and contains the following variables:
 
@@ -33,7 +35,7 @@ The data file for this study is `fpd.csv` and contains the following variables
 
 ## **Background**
 
-The 2024 presidential election cycle is currently approaching. As it is known, there is a host of factors that can effect ones campaign run and thus the results of the election. The U.S states government has formed very specific rules around the use of campaign funds and the way that they are used. Nonetheless, this study aims to find if there is a correlation between the amount of campaign funds a candidate has and their election results. The data set represents the campaign funding and election results of House and Senate candidates from 2016 to 2020. The explanatory variable in this study is is the amount of funding that each candidate receives. The response variable or outcome is whether the candidate saw success in the election.
+The 2024 presidential election cycle is currently approaching. As it is known, there is a host of factors that can effect ones campaign run and thus the results of the election. The U.S states government has formed very specific rules around the use of campaign funds and the way that they are used. Nonetheless, the main question this study hopes to examine is as follows: ***Is there a Correlation Between the Amount of Campaign Funds a Candidate has and their Election Results?*** If there is a correlation between these two factors, it would be important for candidates to understand before they run for an election. The data set represents the campaign funding and election results of House and Senate candidates from 2016 to 2020. The explanatory variable in this study is is the amount of funding that each candidate receives. The response variable or outcome is whether the candidate saw success in the election.
 
 ## **Hypotheses**
 
@@ -66,11 +68,14 @@ The sample used is comprised of data compiled by the OpenSecrets the "nation's p
 
 The **independent variable** in this study is the *amount of money that each candidate has for campaign funding*. The **dependent variable** is the *share percentage of votes the candidates receive* and *the results that each candidate yielded from the election*.
 
+If I observe that candidates with more campaign funding are having increased number of wins or increased share percentage of votes, my hypothesis would be supported. However, I observe that candidates with more campaign funding are having the same number of wins or losses or the same share percentage of votes, then my hypothesis has not been supported.
+
 In order to identify a relationship between overall campaign funding, share percentage of votes from election, and candidates results from the election, this analysis is utilizing a correlation research design.
 
-The graph below represents the top twenty candidatyes with the highest campaign funding from 2016 to 2020.
+The graph below represents the top twenty candidatures with the highest campaign funding from 2016 to 2020.
 
 ```{r warning=FALSE,message=FALSE, results= 'hide'}
+# calculate the candidates with the top campaign funds
 options(scipen = 999)
 
 
@@ -92,6 +97,7 @@ ggplot(
 The following multivariate regression model demonstrates the relationship between the amount of money received for campaign funds, the share percentage of votes the candidate received from the election, and whether the candidate won or loss the overall election.
 
 ```{r}
+#calculate the regression between campaign funding, share percentage of votes, and results of election
 regr_1 <- lm(overallfunding ~ pervote + Result, data = cand_sp)
   
  r1 <- get_regression_table(regr_1)
@@ -101,11 +107,13 @@ knitr::kable(head(r1),digits = 2)
 
 ### **Interpretation**
 
-The intercept of 2.509,749.46 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero and the candidate did not win the election. There is an expected increase of 87,475.74 in campaign funding for each unit increase in the share percentage of votes received by the candidate , also assuming that the candidate winning status stays constant.
+The intercept of 2.509,749.46 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero and the candidate did not win the election. There is an expected increase of 87,475.74 in campaign funding for each unit increase in the share percentage points of votes received by the candidate , also assuming that the candidate winning status stays constant.
 
 The coefficient for 'Result: Won' of 6,217,351.12, shows that when a candidate wins the election, there is an expected increase of 6,217,351.12 in campaign funds in comparison ton when the candidate does not win, also assuming that the share percentage of votes stays constant.
 
 ```{r warning=FALSE,message=FALSE, results='hide'}
+# demonstrate the correlation between share percentage of votes and campaign funding separated by results
+
 cand_sp|>
   ggplot(
     mapping = aes(
@@ -122,9 +130,24 @@ cand_sp|>
 
 The graph above suggest that with both losses and wins there is a slight relationship between an increase of money and an increase of that result. Within the graph it is also evident that candidates who lost their elections experienced more variability in campaign funding than those who won.
 
+```{r}
+# calculating the difference in means of campaign funding for losing candidates vs winning candidates
+
+ate <- cand_sp|>
+  group_by(Result)|>
+  summarize(overallfunding = mean(overallfunding))|>
+  pivot_wider(names_from = Result, values_from = overallfunding)|>
+  mutate(ATE = Won - Lost)|>
+  select(ATE)
+ate
+```
+
+The ate of 7954110 shows that candidates who won are on average have \$7,954,110 more in campaign funding than those who lost the election.
+
 ## **Linear Regression between the Share of Votes and Overall Funding** {style="color: crimson"}
 
 ```{r warning =FALSE, message=FALSE, results='hide'}
+#calculating null distribution
 
 null_dist <- cand_sp |>
   specify(overallfunding ~ pervote) |>
@@ -151,6 +174,8 @@ In this study, the null hypothesis suggest that there is no relationship between
 The following regression displays the relationship between the the amount of funding a candidate received and the share percentage of votes they received during the election process.
 
 ```{r }
+#caculating regression between campaign funding and share percentage of votes
+
 regr_2 <- lm(overallfunding ~ pervote, data = cand_sp)
 
 r2 <- get_regression_table(regr_2)
@@ -160,9 +185,10 @@ knitr::kable(head(r2),digits = 2)
 
 ### **Interpretation**
 
-The intercept of 1,132,003.8 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero. There is an expected increase of 171,455.5 in campaign funding for each unit increase in the share percentage of votes received by the candidate.
+The intercept of 1,132,003.8 , is the estimated campaign funding when the share percentage of votes received by the candidate is zero. There is an expected increase of 171,455.5 in campaign funding for each unit increase in the share percentage points of votes received by the candidate.
 
 ```{r warning=FALSE,message=FALSE, results ='hide'}
+#demonstrates correlation between share percentage of vote and campaign funding
 
 cand_sp|>
   ggplot(
@@ -185,7 +211,15 @@ From the findings above it is clear that that there is not a statistically signi
 
 There is also not a statisitcally significant relationship between campaign funds, the results of the campaign, and the share percentage of votes candidates receive in elections. This can be seen by both the p-value of 0.072 at a significance level ⍺ of 0.05 and with the scatterplot of both loss and wins as the both have slight positive relationships with the increase of campaign funding.
 
-(talk about my hypothesis.
+From these findings, it is obvious that my hypotheses were not fully support. Early I hypothesized that:
+
+1)  As the **amount of available campaign funding increases** so will the **wins of the candidates increase**
+
+    Nonetheless, from the regression models shows that the first hypothesis is true. The was also that ATE of 7954110 that showed candidates who won are on average have \$7,954,110 more in campaign funding than those who lost the election which also supports the hypothesis. However upon analyzing the scatterplot both candidates that won and lost had positive relationships with an increase in campaign funding and share percentage of votes. Therefore, we can not solely caught on the amount of campaign funds as the causal factor for whether candidates will lose or win.
+
+2)  As the **amount of available campaign funding increases** so will the **share percentage of votes received by candidates in the elections increase**
+
+    There also was a slight positive correlation between campaign funds and share percentage of votes received by candidates but that correlation was found to not be statistically significant. We also failed to reject the null so there is no statistical significant relationship between the increase of share percentage of votes and the amount of available campaign funding.
 
 **Limitations**
 
